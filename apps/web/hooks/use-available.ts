@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query"
 
 import { api } from "@/lib/api"
 
-export function useHealth() {
+export function useAvailable() {
   return useQuery({
-    queryKey: ["health"],
+    queryKey: ["available"],
     queryFn: async () => {
-      const { data, error } = await api.health.get()
+      const { data, error } = await api.tickets.available.get()
       if (error) throw error
       return data
     },

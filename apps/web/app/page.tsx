@@ -3,56 +3,85 @@
 import { Button } from "@workspace/ui/components/button"
 
 import { useHealth } from "@/hooks/use-health"
+import { useAvailable } from "@/hooks/use-available"
+import { useBooking } from "@/hooks/use-booking"
+import { useStatus } from "@/hooks/use-status"
+import { useConfirm } from "@/hooks/use-confirm"
+import { useUserId } from "@/hooks/use-user-id"
+import { Countdown } from "@/components/countdown"
 
 export default function Page() {
-  const { data, isLoading, isError, error } = useHealth()
+  const userId = useUserId()
+  const health = useHealth()
+  const available = useAvailable()
+  const status = useStatus(userId)
+  const booking = useBooking(userId)
+  const confirmation = useConfirm(userId)
+
+  const availableSeats = available.data?.available ?? 0
+  const canBook =
+    !available.isLoading && availableSeats > 0 && !booking.isPending
 
   return (
     <div className="flex min-h-svh p-6">
       <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
+        <header>
           <h1 className="font-medium">Sonic Ticket</h1>
           <p className="text-muted-foreground">API health (live polling)</p>
-        </div>
+        </header>
 
         <div className="rounded-md border border-border p-4 font-mono text-xs">
-          {isLoading && <span>Loading…</span>}
-          {isError && (
+          {health.isLoading && <span>Loading…</span>}
+          {health.isError && (
             <span className="text-destructive">
-              Error: {(error as Error).message}
+              Error: {(health.error as Error).message}
             </span>
           )}
-          {data && (
-            <div className="flex flex-col gap-1">
-              <div>
-                <span className="text-muted-foreground">database: </span>
-                <StatusBadge status={data.database} />
-              </div>
-              <div>
-                <span className="text-muted-foreground">redis: </span>
-                <StatusBadge status={data.redis} />
-              </div>
-              <div className="text-muted-foreground">
-                at {data.timestamp.toString()}
-              </div>
+          {health.data && (
+            <div>
+              <span className="text-muted-foreground">available: </span>
+              <span
+                className={
+                  availableSeats > 0 ? "text-green-600" : "text-red-600"
+                }
+              >
+                {availableSeats}
+              </span>
             </div>
           )}
         </div>
 
-        <Button className="w-fit">Button</Button>
+        {status.data?.status === "holding" && (
+          <>
+            <Countdown
+              seconds={Math.floor(
+                (status.data.expiresAt.getTime() - Date.now()) / 1000
+              )}
+            />
+            <Button
+              className="w-fit"
+              disabled={confirmation.isPending}
+              onClick={() => confirmation.mutate()}
+            >
+              {confirmation.isPending ? "Confirming..." : "Confirm"}
+            </Button>
+          </>
+        )}
+
+        {status.data?.status === "none" && (
+          <Button
+            className="w-fit"
+            disabled={!canBook}
+            onClick={() => booking.mutate()}
+          >
+            {booking.isPending ? "Booking..." : "Book"}
+          </Button>
+        )}
 
         <div className="font-mono text-xs text-muted-foreground">
           (Press <kbd>d</kbd> to toggle dark mode)
         </div>
       </div>
     </div>
-  )
-}
-
-function StatusBadge({ status }: { status: "ok" | "down" }) {
-  return (
-    <span className={status === "ok" ? "text-green-600" : "text-red-600"}>
-      {status}
-    </span>
   )
 }
