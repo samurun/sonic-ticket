@@ -2,6 +2,7 @@
   "name": "sonic-ticket",
   "version": "0.0.1",
   "private": true,
+  "description": "High-throughput ticket reservation demo — atomic Redis hot path with Postgres audit trail, targeting 500 reservations in 2s and 5k+ concurrent users. Bun + Elysia + Next.js monorepo.",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -14,7 +15,8 @@
     "db:studio": "dotenv -e .env -- pnpm --filter @workspace/db db:studio",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "docker:build": "docker compose build"
+    "docker:build": "docker compose build",
+    "loadtest": "pnpm --filter api loadtest"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
