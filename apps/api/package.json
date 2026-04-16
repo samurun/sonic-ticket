@@ -7,13 +7,15 @@
   },
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "loadtest": "k6 run loadtest/reservation-rush.js"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",
     "@elysiajs/openapi": "^1.4.14",
     "@workspace/db": "workspace:*",
     "@workspace/redis": "workspace:*",
+    "drizzle-orm": "^0.38.4",
     "elysia": "latest"
   },
   "devDependencies": {
