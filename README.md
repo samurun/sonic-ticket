@@ -1,6 +1,8 @@
-# Sonic Ticket
+# Sonic Ticket (Ass)
 
 High-throughput ticket reservation demo — ไล่ SLA 500 reservations / 2 วินาที และรองรับ concurrent users 5,000+ คน โดยใช้ Redis เป็น hot path สำหรับ seat inventory และ Postgres เป็น durable audit trail
+
+> 📋 **About this project** — take-home assignment จากการสมัครงานตำแหน่ง Full Stack Developer โจทย์คือออกแบบและ implement ระบบจองตั๋วที่รองรับ traffic spike ตามใน SLA ด้านล่าง repo นี้รวม API, Web UI, โครงสร้าง monorepo, docker setup, load test และ benchmark ที่วัดผลจริง
 
 ## SLA ที่ขับสถาปัตยกรรม
 
