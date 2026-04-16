@@ -1,5 +1,2 @@
 export * from "./users"
-export * from "./events"
-export * from "./ticket-tiers"
-export * from "./reservations"
-export * from "./orders"
+export * from "./tickets"
